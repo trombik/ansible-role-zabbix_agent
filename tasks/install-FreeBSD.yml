@@ -2,5 +2,16 @@
 
 - name: Install zabbix_agent
   pkgng:
-    name: zabbix_agent
+    name: "{{ zabbix_agent_package }}"
     state: present
+
+- name: "Create /etc/rc.conf.d/{{ zabbix_agent_service }}"
+  template:
+    src: FreeBSD.rcd.j2
+    dest: "/etc/rc.conf.d/{{ zabbix_agent_service }}"
+    mode: "0644"
+
+- name: Enable zabbix_agent
+  service:
+    name: "{{ zabbix_agent_service }}"
+    enabled: yes

@@ -3,4 +3,10 @@
   roles:
     - ansible-role-zabbix_agent
   vars:
-    zabbix_agent_config: ""
+    zabbix_agent_config: |
+      LogType=system
+      Server={{ zabbix_agent_server }}
+      ListenPort={{ zabbix_agent_listen_port }}
+      ListenIP={{ zabbix_agent_listen_ip }}
+      ServerActive={{ zabbix_agent_server }}
+      Hostname=Zabbix server

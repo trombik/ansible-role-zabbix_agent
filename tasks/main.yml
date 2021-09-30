@@ -1,33 +1,16 @@
 ---
 # tasks file for ansible-role-zabbix_agent
 
-- include_vars: "{{ ansible_os_family }}.yml"
+- name: "Include {{ ansible_os_family }}.yml"
+  include_vars: "{{ ansible_os_family }}.yml"
 
-- include: "install-{{ ansible_os_family }}.yml"
+- name: "Include install-{{ ansible_os_family }}.yml"
+  include: "install-{{ ansible_os_family }}.yml"
 
-- name: Create log directory
-  file:
-    path: "{{ zabbix_agent_log_dir }}"
-    mode: 0755
-    owner: "{{ zabbix_agent_user }}"
-    group: "{{ zabbix_agent_group }}"
-    state: directory
-  notify: Restart zabbix_agent
-
-- name: Create db directory
-  file:
-    path: "{{ zabbix_agent_db_dir }}"
-    mode: 0755
-    owner: "{{ zabbix_agent_user }}"
-    group: "{{ zabbix_agent_group }}"
-    state: directory
-  notify: Restart zabbix_agent
-
-- name: Create zabbix_agent.conf
+- name: "Create {{ zabbix_agent_conf_file }}"
   template:
-    src: zabbix_agent.conf.j2
+    src: zabbix_agentd.conf.j2
     dest: "{{ zabbix_agent_conf_file }}"
-    validate: echo %s
   notify: Restart zabbix_agent
 
 - name: Start zabbix_agent
