@@ -1,0 +1,6 @@
+---
+
+- name: Install zabbix_agent
+  pkgng:
+    name: zabbix_agent
+    state: present
