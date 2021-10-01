@@ -2,7 +2,7 @@
 galaxy_info:
   role_name: zabbix_agent
   author: Tomoyuki Sakurai
-  description: Configures something
+  description: Configures zabbix agent
   company: N/A
   license: BSD
   min_ansible_version: 2.0
