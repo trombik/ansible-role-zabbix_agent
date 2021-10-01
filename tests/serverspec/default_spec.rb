@@ -1,25 +1,31 @@
 require "spec_helper"
 require "serverspec"
 
-package = "zabbix_agent"
-service = "zabbix_agentd"
-config  = "/etc/zabbix_agent/zabbix_agent.conf"
-user    = "zabbix_agent"
-group   = "zabbix_agent"
+package = "zabbix-agent"
+service = "zabbix-agent"
+config_dir = "/etc/zabbix"
+user    = "zabbix"
+group   = "zabbix"
 ports   = [10050]
 
 case os[:family]
 when "freebsd"
+  service = "zabbix_agentd"
   package = "zabbix54-agent"
-  config = "/usr/local/etc/zabbix54/zabbix_agentd.conf"
+  config_dir = "/usr/local/etc/zabbix54"
 end
+config  = "#{config_dir}/zabbix_agentd.conf"
 
 describe package(package) do
   it { should be_installed }
 end
 
 describe file(config) do
+  it { should exist }
   it { should be_file }
+  it { should be_mode 640 }
+  it { should be_owned_by user }
+  it { should be_grouped_into group }
   its(:content) { should match Regexp.escape("Managed by ansible") }
 end
 

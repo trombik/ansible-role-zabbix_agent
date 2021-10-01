@@ -8,13 +8,16 @@
   include: "install-{{ ansible_os_family }}.yml"
 
 - name: "Create {{ zabbix_agent_conf_file }}"
-  template:
+  ansible.builtin.template:
     src: zabbix_agentd.conf.j2
     dest: "{{ zabbix_agent_conf_file }}"
+    mode: '0640'
+    owner: "{{ zabbix_agent_user }}"
+    group: "{{ zabbix_agent_group }}"
   notify: Restart zabbix_agent
 
 - name: Start zabbix_agent
-  service:
+  ansible.builtin.service:
     name: "{{ zabbix_agent_service }}"
     enabled: true
     state: started
