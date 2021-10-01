@@ -13,6 +13,12 @@ when "freebsd"
   service = "zabbix_agentd"
   package = "zabbix54-agent"
   config_dir = "/usr/local/etc/zabbix54"
+when "openbsd"
+  user = "_zabbix"
+  group = "_zabbix"
+  service = "zabbix_agentd"
+  package = "zabbix-agent"
+  config_dir = "/etc/zabbix"
 end
 config = "#{config_dir}/zabbix_agentd.conf"
 
