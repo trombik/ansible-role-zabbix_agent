@@ -1,0 +1,11 @@
+---
+
+- name: Install zabbix_agent
+  ansible.builtin.openbsd_pkg:
+    name: "{{ zabbix_agent_package }}"
+    state: present
+
+- name: Enable zabbix_agent
+  ansible.builtin.service:
+    name: "{{ zabbix_agent_service }}"
+    enabled: yes
