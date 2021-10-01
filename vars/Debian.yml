@@ -1,0 +1,7 @@
+---
+__zabbix_agent_user: zabbix
+__zabbix_agent_group: zabbix
+__zabbix_agent_service: zabbix-agent
+__zabbix_agent_package: zabbix-agent
+__zabbix_agent_conf_dir: /etc/zabbix
+__zabbix_agent_conf_file: /etc/zabbix/zabbix_agentd.conf
