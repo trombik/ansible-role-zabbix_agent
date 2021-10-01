@@ -6,7 +6,7 @@ service = "zabbix-agent"
 config_dir = "/etc/zabbix"
 user    = "zabbix"
 group   = "zabbix"
-ports   = [10050]
+ports   = [10_050]
 
 case os[:family]
 when "freebsd"
@@ -14,7 +14,7 @@ when "freebsd"
   package = "zabbix54-agent"
   config_dir = "/usr/local/etc/zabbix54"
 end
-config  = "#{config_dir}/zabbix_agentd.conf"
+config = "#{config_dir}/zabbix_agentd.conf"
 
 describe package(package) do
   it { should be_installed }
