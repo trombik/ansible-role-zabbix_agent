@@ -7,7 +7,54 @@
 - name: "Include install-{{ ansible_os_family }}.yml"
   include: "install-{{ ansible_os_family }}.yml"
 
-- name: "Create {{ zabbix_agent_conf_file }}"
+- name: Create zabbix_agent_conf_d_dir
+  ansible.builtin.file:
+    path: "{{ zabbix_agent_conf_d_dir }}"
+    mode: "0755"
+    state: directory
+
+- name: Create zabbix_agent_config_flagments
+  ansible.builtin.template:
+    src: flagment.j2
+    dest: "{{ zabbix_agent_conf_d_dir }}/{{ item['name'] }}"
+
+    # XXX agent reads the files _after_ dropping priv
+    owner: "{{ zabbix_agent_user }}"
+    group: "{{ zabbix_agent_group }}"
+    mode: "0600"
+  with_items: "{{ zabbix_agent_config_flagments }}"
+  notify:
+    - Restart zabbix_agent
+  when:
+    - "item['state'] == 'present'"
+
+- name: Create zabbix_agent_pid_dir
+  ansible.builtin.file:
+    path: "{{ zabbix_agent_pid_dir }}"
+    mode: '0755'
+    owner: "{{ zabbix_agent_user }}"
+    group: "{{ zabbix_agent_group }}"
+    state: directory
+
+- name: Create zabbix_agent_log_dir
+  ansible.builtin.file:
+    path: "{{ zabbix_agent_log_dir }}"
+    mode: '0755'
+    owner: "{{ zabbix_agent_user }}"
+    group: "{{ zabbix_agent_group }}"
+    state: directory
+
+- name: Remove zabbix_agent_config_flagments
+  ansible.builtin.file:
+    path: "{{ zabbix_agent_conf_d_dir }}/{{ item['name'] }}"
+    state: absent
+  with_items: "{{ zabbix_agent_config_flagments }}"
+  notify:
+    - Restart zabbix_agent
+  when:
+    - "item['state'] == 'absent'"
+
+- name: Create zabbix_agent_conf_file
   ansible.builtin.template:
     src: zabbix_agentd.conf.j2
     dest: "{{ zabbix_agent_conf_file }}"

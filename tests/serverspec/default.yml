@@ -4,9 +4,23 @@
     - ansible-role-zabbix_agent
   vars:
     zabbix_agent_config: |
-      LogType=system
       Server={{ zabbix_agent_server }}
       ListenPort={{ zabbix_agent_listen_port }}
       ListenIP={{ zabbix_agent_listen_ip }}
       ServerActive={{ zabbix_agent_server }}
       Hostname=Zabbix server
+      LogFileSize=0
+      LogFile={{ zabbix_agent_log_file }}
+
+      {% if ansible_os_family == 'Debian' %}
+      PidFile={{ zabbix_agent_pid_file }}
+      {% endif %}
+
+      Include={{ zabbix_agent_conf_d_dir }}/*.conf
+    zabbix_agent_config_flagments:
+      - name: foo.conf
+        content: |
+          # foo.conf
+        state: present
+      - name: bar.conf
+        state: absent
