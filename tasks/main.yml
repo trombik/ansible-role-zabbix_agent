@@ -39,7 +39,10 @@
     - zabbix_agent_x509_enable
 
 - name: Include trombik.x509_certificate
-  ansible.builtin.include_role:
+  # XXX `ansible.builtin.include_role` causes `MODULE FAILURE` on Ubuntu
+  # (ansible 2.9.6). use `include_role` for now.
+  # ansible.builtin.include_role:
+  include_role:
     name: trombik.x509_certificate
   when:
     - zabbix_agent_x509_enable
