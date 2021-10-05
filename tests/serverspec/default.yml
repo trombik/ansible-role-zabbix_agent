@@ -16,6 +16,14 @@
       PidFile={{ zabbix_agent_pid_file }}
       {% endif %}
 
+      {% if zabbix_agent_x509_enable %}
+      TLSAccept=cert
+      TLSConnect=cert
+      TLSCAFile={{ project_agent_ca_pub_file }}
+      TLSCertFile={{ project_agent_pub_file }}
+      TLSKeyFile={{ project_agent_key_file }}
+      {% endif %}
+
       Include={{ zabbix_agent_conf_d_dir }}/*.conf
     zabbix_agent_config_flagments:
       - name: foo.conf
@@ -24,3 +32,117 @@
         state: present
       - name: bar.conf
         state: absent
+    zabbix_agent_x509_enable: yes
+    project_agent_ca_pub_file: "{{ zabbix_agent_x509_cert_dir }}/ca.pub"
+    project_agent_pub_file: "{{ zabbix_agent_x509_cert_dir }}/agent.pub"
+    project_agent_key_file: "{{ zabbix_agent_x509_cert_dir }}/agent.key"
+
+    # _______________________________________________x509
+    x509_certificate_debug_log: yes
+    x509_certificate:
+      - name: ca
+        state: present
+        public:
+          owner: "{{ zabbix_agent_user }}"
+          group: "{{ zabbix_agent_group }}"
+          mode: "0644"
+          path: "{{ project_agent_ca_pub_file }}"
+          key: |
+            -----BEGIN CERTIFICATE-----
+            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
+            RLpsEv+JMnbyge94Vh/kGG5PC9LxqTW4Jw==
+            -----END CERTIFICATE-----
+      - name: server
+        state: present
+        public:
+          path: "{{ project_agent_pub_file }}"
+          owner: "{{ zabbix_agent_user }}"
+          group: "{{ zabbix_agent_group }}"
+          mode: "0644"
+          key: |
+            -----BEGIN CERTIFICATE-----
+            MIIEMjCCAhoCFGwjnXE47m8CJnOmQs8O+jGms4tvMA0GCSqGSIb3DQEBCwUAMFIx
+            CzAJBgNVBAYTAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEwHwYDVQQKDBhJbnRl
+            cm5ldCBXaWRnaXRzIFB0eSBMdGQxCzAJBgNVBAMMAmNhMB4XDTIxMTAwNTEzMjEx
+            NloXDTMxMTAwMzEzMjExNlowWTELMAkGA1UEBhMCQVUxEzARBgNVBAgMClNvbWUt
+            U3RhdGUxITAfBgNVBAoMGEludGVybmV0IFdpZGdpdHMgUHR5IEx0ZDESMBAGA1UE
+            AwwJbG9jYWxob3N0MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvI0P
+            DY+/LTUuNmpGjtuReEWtuCLIpTifrmWZhy8WBfrVLpdvvQAvVT0X4qeZACH78yDL
+            UwWpA0M1eEYz2TLJP4fh/M6VFE6V0rJo+aCMfosGWUMroe00Y6UvhyTQmgkzh18d
+            VulIy3S5fuXzLrzdpAmka9FJu0eDXcEzMqYuO4caLagjPTVzQIRUHFccWPduuaFU
+            RPqQWtUDIspYLbCYlcdowXauNVSQfDpYcydHCQdpF0fUokJy8eldnhYMqzq3x7Xc
+            Dx4nvwvLkSFbdcLB/TZw5TJkSFwPE3728MCHbOQh+2uxVwOsvT/yVfJm6arSbP/g
+            YHXFDWuAORacYqCIbwIDAQABMA0GCSqGSIb3DQEBCwUAA4ICAQAjiLO5H+pcxXdp
+            UXDCZViJTPH2kappLplsZruoYdsLkxjRQuS9SvBZc/KbZ9SOFR0WJ/Tz1QgpacPo
+            tAoO0VONDx4zZE1sEwgQ217xUMzbXiZz3qd2u24/JMzvwNuKTmqRYFlEK1HKulCg
+            DsjoQRc4IBVL3HNrjabyVcoSlec+E5uTnDMSBmd9nOBI7AyBwFcKgLyqtWLtgol/
+            ujSVz/76b7UhJoq2Rf7l9tPv8C3ZVLjaq9xN2sKnsfnlLe0qaDtWVG8pm21D+cPl
+            YBvCFj27LPBJLmHnU3oe48wLMX6BCImwHciG0hLCJKJ049VjSpJPk5z8S+OQKPGy
+            jFDguO/4dAH8WfnC9RNbewF37MkbGGFZT8SlXnFQ+1pKc+AWZbu6LyX3qlVEQjqp
+            HwuifXrJd5w0EcCK54J2mKfexM8dKLsQM9EcSNBsYRNUAOtcpNN3tuCjCYNUoqlK
+            AjhPMS6EzGM+R55yVSjc4KoJgCoTCRfRs+o4YoE6xB1FlW5XdD1AJAHELTmAip+g
+            HII1nNzBidzGd/kCw5+zIUWTV1F8uF3vyeWR+G6YzDnP+b5ojK4VsXs+L+0P8WWw
+            SKvIeq9zqIDgseMsGuHEB5pu5rDSTmNVkvJLBb8yjwA47vwRb2c/omRdi9LTO6hn
+            ySyPIxx7CcIaBN3MhqC4ckh1E0KftQ==
+            -----END CERTIFICATE-----
+        secret:
+          path: "{{ project_agent_key_file }}"
+          owner: "{{ zabbix_agent_user }}"
+          group: "{{ zabbix_agent_group }}"
+          mode: "0600"
+          key: |
+            -----BEGIN RSA PRIVATE KEY-----
+            MIIEpQIBAAKCAQEAvI0PDY+/LTUuNmpGjtuReEWtuCLIpTifrmWZhy8WBfrVLpdv
+            vQAvVT0X4qeZACH78yDLUwWpA0M1eEYz2TLJP4fh/M6VFE6V0rJo+aCMfosGWUMr
+            oe00Y6UvhyTQmgkzh18dVulIy3S5fuXzLrzdpAmka9FJu0eDXcEzMqYuO4caLagj
+            PTVzQIRUHFccWPduuaFURPqQWtUDIspYLbCYlcdowXauNVSQfDpYcydHCQdpF0fU
+            okJy8eldnhYMqzq3x7XcDx4nvwvLkSFbdcLB/TZw5TJkSFwPE3728MCHbOQh+2ux
+            VwOsvT/yVfJm6arSbP/gYHXFDWuAORacYqCIbwIDAQABAoIBAQCe8BkcSWvR495M
+            qFFJ4vRA+htx+IBCJfUUwTglqB9ccxB48daS7zD3HUShHr3uSrdjPuWl2kOaKHFO
+            LX9PO2xBTX3F6S3prETHEvVCV3+WvAJiBCknmhhrVrc1qGbfMZpqJldJB+UA/CfR
+            PG09nJ8Iw8gByq3oXGP0CAPsUgDu04JsLBOJpScer1j+GtwF+1KeYM5lcSfgTYK6
+            sf9pjCA24XWT9vdt76ayoaJnzDQ77JAS0mE/E5wBeJKXFFac246PZuJiRMlmh/uv
+            CGIq37CvV/WHVhfWkBmOTFDMGLFiBxhOAFJKrcrfJNqz359R2a6hNa0BJESu6ORq
+            cA4/j9IBAoGBAPl9Ir698rQzMD1ea8eLhSoJmh217Zd3oepQO/uJuf6J6AJrPnhi
+            fb/isvIierUNsohFj8aW+fjlSmvy5Q5GKgTOM3IOAUpXvJWXvC+6uf4cngqw2rh4
+            fxska8nFGrpAURpxjj40Lbnj7Qnt7pKMrBIu2C2eaMno34gsdHdN8cFBAoGBAMF4
+            ylj/MVGnVQ3f/TCnTWqC+E5/L5wbulI6NKzY/yz8RrLPPP7OAWhTDb5RMxXiC3nR
+            WvxMZVwqEmK4mQv1IpbJSm1fXzTgu2UY3nIrr+flq9IkfvifNN5KlAYmgZzIXeUE
+            /xdVB9vXanodMW6FGi6S6yZMTfDqK3STs+FtJS2vAoGBAPj0stgtiWPh9JA4iUp8
+            4evZ2w0svqK3wT2kxMYzYAMsr/TB+Xt9pMf2uuQ+Hb5PpcivyVG81EJW45WmsoU0
+            5LcY4GM+sHDz7f5EhIgIR5LYEajPY+JSc1utU1XrNsmGZqgBipRt0vc9Bwsyfy+D
+            6izWy+dxvFVG6M/ktG9cuxJBAoGAJ9v45Ej/IjF1RnyFL0boni8JdTKi3migBFzV
+            iV7Tg7Md5azohh5vD808oZ8dBT8i2iAVvLEImOpaC1i4v0vrqmEiIlJpzP0X3oY3
+            HhJ+FSquMYcvWY2DWODIilPYlDJ7lblnzKjKC7LfzvTAwGJPuJSwOZ2y2RWFimj7
+            wE+6PyUCgYEAmxYRvzpChBqSOdfX/IAMTJHYJ0D8QaM0OHykwLpflQL+HwaAEUPJ
+            Z35sqvkl1hN0L/RABA2vbYRKpDhqJpIiM2Ff0RN2s4mO/eFShfwOrWo4KObTFUzV
+            eQlLeaYnzV5csXaKTi+XBXU+VqrZBvpY27APRmb7JJWl3mgnwSnPjyg=
+            -----END RSA PRIVATE KEY-----

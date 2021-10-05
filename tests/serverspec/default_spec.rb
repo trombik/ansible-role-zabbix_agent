@@ -32,6 +32,9 @@ end
 config = "#{config_dir}/zabbix_agentd.conf"
 conf_d_dir = "#{config_dir}/zabbix_agentd.conf.d"
 pid_file = "#{pid_dir}/zabbix_agentd.pid"
+ca_pub = "#{config_dir}/cert/ca.pub"
+agent_pub = "#{config_dir}/cert/agent.pub"
+agent_key = "#{config_dir}/cert/agent.key"
 
 describe package(package) do
   it { should be_installed }
@@ -88,6 +91,7 @@ describe file(log_file) do
   it { should be_owned_by user }
   it { should be_grouped_into group }
   its(:content) { should match(/Starting Zabbix Agent/) }
+  its(:content) { should match(/TLS support:\s+YES/) }
 end
 
 describe file("#{conf_d_dir}/foo.conf") do
@@ -120,4 +124,31 @@ ports.each do |p|
   describe port(p) do
     it { should be_listening }
   end
+end
+
+describe file ca_pub do
+  it { should exist }
+  it { should be_file }
+  it { should be_mode 644 }
+  it { should be_owned_by user }
+  it { should be_grouped_into group }
+  its(:content) { should match(/BEGIN CERTIFICATE/) }
+end
+
+describe file agent_pub do
+  it { should exist }
+  it { should be_file }
+  it { should be_mode 644 }
+  it { should be_owned_by user }
+  it { should be_grouped_into group }
+  its(:content) { should match(/BEGIN CERTIFICATE/) }
+end
+
+describe file agent_key do
+  it { should exist }
+  it { should be_file }
+  it { should be_mode 600 }
+  it { should be_owned_by user }
+  it { should be_grouped_into group }
+  its(:content) { should match(/BEGIN RSA PRIVATE KEY/) }
 end

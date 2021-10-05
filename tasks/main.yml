@@ -28,6 +28,22 @@
   when:
     - "item['state'] == 'present'"
 
+- name: Create zabbix_agent_x509_cert_dir
+  ansible.builtin.file:
+    path: "{{ zabbix_agent_x509_cert_dir }}"
+    owner: "{{ zabbix_agent_user }}"
+    group: "{{ zabbix_agent_group }}"
+    mode: "0755"
+    state: directory
+  when:
+    - zabbix_agent_x509_enable
+
+- name: Include trombik.x509_certificate
+  ansible.builtin.include_role:
+    name: trombik.x509_certificate
+  when:
+    - zabbix_agent_x509_enable
+
 - name: Create zabbix_agent_pid_dir
   ansible.builtin.file:
     path: "{{ zabbix_agent_pid_dir }}"
