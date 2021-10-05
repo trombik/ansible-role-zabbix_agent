@@ -1,0 +1,5 @@
+---
+roles:
+  - name: trombik.x509_certificate
+collections:
+  - name: community.general
