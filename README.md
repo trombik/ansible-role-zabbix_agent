@@ -4,7 +4,8 @@ A brief description of the role goes here.
 
 # Requirements
 
-The role uses `ansible` collections when `zabbix_agent_x509_enable` is true.
+The role uses `ansible` collections when the length of
+`zabbix_agent_x509_certificates` is more than zero.
 See [`requirements.ym`l](requirements.yml).
 
 # Role Variables
@@ -16,7 +17,7 @@ See [`requirements.ym`l](requirements.yml).
 # Dependencies
 
 The role depends on [`trombik.x509_certificate`](https://github.com/trombik/ansible-role-x509_certificate)
-when `zabbix_agent_x509_enable` is true.
+when the length of `zabbix_agent_x509_certificates` is more than zero.
 
 # Example Playbook
 

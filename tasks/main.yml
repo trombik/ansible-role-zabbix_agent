@@ -36,7 +36,7 @@
     mode: "0755"
     state: directory
   when:
-    - zabbix_agent_x509_enable
+    - zabbix_agent_x509_cert_dir | length > 0
 
 - name: Include trombik.x509_certificate
   # XXX `ansible.builtin.include_role` causes `MODULE FAILURE` on Ubuntu
@@ -50,7 +50,8 @@
   vars:
     x509_certificate: "{{ zabbix_agent_x509_certificates }}"
   when:
-    - zabbix_agent_x509_enable
+    - zabbix_agent_x509_certificates
+    - zabbix_agent_x509_certificates | length > 0
 
 - name: Create zabbix_agent_pid_dir
   ansible.builtin.file:

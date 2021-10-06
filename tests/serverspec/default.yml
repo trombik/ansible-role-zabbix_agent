@@ -16,13 +16,11 @@
       PidFile={{ zabbix_agent_pid_file }}
       {% endif %}
 
-      {% if zabbix_agent_x509_enable %}
       TLSAccept=cert
       TLSConnect=cert
       TLSCAFile={{ project_agent_ca_pub_file }}
       TLSCertFile={{ project_agent_pub_file }}
       TLSKeyFile={{ project_agent_key_file }}
-      {% endif %}
 
       Include={{ zabbix_agent_conf_d_dir }}/*.conf
     zabbix_agent_config_flagments:
@@ -32,7 +30,6 @@
         state: present
       - name: bar.conf
         state: absent
-    zabbix_agent_x509_enable: yes
     project_agent_ca_pub_file: "{{ zabbix_agent_x509_cert_dir }}/ca.pub"
     project_agent_pub_file: "{{ zabbix_agent_x509_cert_dir }}/agent.pub"
     project_agent_key_file: "{{ zabbix_agent_x509_cert_dir }}/agent.key"
