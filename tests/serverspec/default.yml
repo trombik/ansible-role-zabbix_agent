@@ -3,6 +3,7 @@
   roles:
     - ansible-role-zabbix_agent
   vars:
+    zabbix_agent_debug: yes
     zabbix_agent_config: |
       Server={{ zabbix_agent_server }}
       ListenPort={{ zabbix_agent_listen_port }}

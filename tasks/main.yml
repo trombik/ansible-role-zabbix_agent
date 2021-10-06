@@ -28,6 +28,16 @@
   when:
     - "item['state'] == 'present'"
 
+- name: Remove zabbix_agent_config_flagments
+  ansible.builtin.file:
+    path: "{{ zabbix_agent_conf_d_dir }}/{{ item['name'] }}"
+    state: absent
+  with_items: "{{ zabbix_agent_config_flagments }}"
+  notify:
+    - Restart zabbix_agent
+  when:
+    - "item['state'] == 'absent'"
+
 - name: Create zabbix_agent_x509_cert_dir
   ansible.builtin.file:
     path: "{{ zabbix_agent_x509_cert_dir }}"
@@ -49,6 +59,7 @@
     name: trombik.x509_certificate
   vars:
     x509_certificate: "{{ zabbix_agent_x509_certificates }}"
+    x509_certificate_debug_log: "{{ zabbix_agent_debug }}"
   when:
     - zabbix_agent_x509_certificates
     - zabbix_agent_x509_certificates | length > 0
@@ -68,16 +79,6 @@
     owner: "{{ zabbix_agent_user }}"
     group: "{{ zabbix_agent_group }}"
     state: directory
-
-- name: Remove zabbix_agent_config_flagments
-  ansible.builtin.file:
-    path: "{{ zabbix_agent_conf_d_dir }}/{{ item['name'] }}"
-    state: absent
-  with_items: "{{ zabbix_agent_config_flagments }}"
-  notify:
-    - Restart zabbix_agent
-  when:
-    - "item['state'] == 'absent'"
 
 - name: Create zabbix_agent_conf_file
   ansible.builtin.template:

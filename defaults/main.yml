@@ -17,3 +17,4 @@ zabbix_agent_log_dir: "{{ __zabbix_agent_log_dir }}"
 zabbix_agent_log_file: "{{ zabbix_agent_log_dir }}/zabbix_agentd.log"
 zabbix_agent_x509_cert_dir: "{{ zabbix_agent_conf_dir }}/cert"
 zabbix_agent_x509_certificates: []
+zabbix_agent_debug: no
