@@ -39,7 +39,7 @@
 
     # _______________________________________________x509
     x509_certificate_debug_log: yes
-    x509_certificate:
+    zabbix_agent_x509_certificates:
       - name: ca
         state: present
         public:

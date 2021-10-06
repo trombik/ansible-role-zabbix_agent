@@ -42,8 +42,13 @@
   # XXX `ansible.builtin.include_role` causes `MODULE FAILURE` on Ubuntu
   # (ansible 2.9.6). use `include_role` for now.
   # ansible.builtin.include_role:
+  #
+  # TODO use `vars`? i.e. make it possible for multiple roles to perform include_role
+  # https://docs.ansible.com/ansible/latest/user_guide/playbooks_reuse.html#includes-dynamic-re-use
   include_role:
     name: trombik.x509_certificate
+  vars:
+    x509_certificate: "{{ zabbix_agent_x509_certificates }}"
   when:
     - zabbix_agent_x509_enable
 
