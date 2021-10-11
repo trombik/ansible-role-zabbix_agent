@@ -118,8 +118,8 @@ describe file(psk_dir) do
   it { should exist }
   it { should be_directory }
   it { should be_mode 755 }
-  it { should be_owned_by user }
-  it { should be_grouped_into group }
+  it { should be_owned_by default_user }
+  it { should be_grouped_into default_group }
 end
 
 case os[:family]

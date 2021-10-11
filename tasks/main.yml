@@ -93,8 +93,6 @@
   ansible.builtin.file:
     path: "{{ zabbix_agent_psk_dir }}"
     mode: "0755"
-    owner: "{{ zabbix_agent_user }}"
-    group: "{{ zabbix_agent_group }}"
     state: directory
 
 - name: Create zabbix_agent_psk file

@@ -35,7 +35,6 @@
     project_agent_key_file: "{{ zabbix_agent_x509_cert_dir }}/agent.key"
 
     # _______________________________________________PSK
-    zabbix_agent_psk_dir: "{{ zabbix_agent_conf_dir }}/psk"
     zabbix_agent_psk:
       name: default.psk
       identity: default
