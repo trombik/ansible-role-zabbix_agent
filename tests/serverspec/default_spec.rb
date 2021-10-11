@@ -1,6 +1,10 @@
 require "spec_helper"
 require "serverspec"
 
+# rubocop:disable Style/GlobalVars
+$TLS_TYPE ||= "cert"
+# rubocop:enable Style/GlobalVars
+
 package = "zabbix-agent"
 service = "zabbix-agent"
 config_dir = "/etc/zabbix"
@@ -35,6 +39,8 @@ pid_file = "#{pid_dir}/zabbix_agentd.pid"
 ca_pub = "#{config_dir}/cert/ca.pub"
 agent_pub = "#{config_dir}/cert/agent.pub"
 agent_key = "#{config_dir}/cert/agent.key"
+psk_dir = "#{config_dir}/psk"
+psk_file = "#{psk_dir}/default.psk"
 
 describe package(package) do
   it { should be_installed }
@@ -108,6 +114,23 @@ describe file("#{conf_d_dir}/bar.conf") do
   it { should_not exist }
 end
 
+describe file(psk_dir) do
+  it { should exist }
+  it { should be_directory }
+  it { should be_mode 755 }
+  it { should be_owned_by user }
+  it { should be_grouped_into group }
+end
+
+describe file(psk_file) do
+  it { should exist }
+  it { should be_file }
+  it { should be_mode 600 }
+  it { should be_owned_by user }
+  it { should be_grouped_into group }
+  its(:content) { should match Regexp.escape("202bedb620721ba6126b1d0c1239044237397dc544a5c28095a5bb75925f471c") }
+end
+
 case os[:family]
 when "freebsd"
   describe file("/etc/rc.conf.d/#{service}") do
@@ -126,29 +149,45 @@ ports.each do |p|
   end
 end
 
-describe file ca_pub do
-  it { should exist }
-  it { should be_file }
-  it { should be_mode 644 }
-  it { should be_owned_by user }
-  it { should be_grouped_into group }
-  its(:content) { should match(/BEGIN CERTIFICATE/) }
-end
+# rubocop:disable Style/GlobalVars
+case $TLS_TYPE
+# rubocop:enable Style/GlobalVars
+when "cert"
+  describe file ca_pub do
+    it { should exist }
+    it { should be_file }
+    it { should be_mode 644 }
+    it { should be_owned_by user }
+    it { should be_grouped_into group }
+    its(:content) { should match(/BEGIN CERTIFICATE/) }
+  end
 
-describe file agent_pub do
-  it { should exist }
-  it { should be_file }
-  it { should be_mode 644 }
-  it { should be_owned_by user }
-  it { should be_grouped_into group }
-  its(:content) { should match(/BEGIN CERTIFICATE/) }
-end
+  describe file agent_pub do
+    it { should exist }
+    it { should be_file }
+    it { should be_mode 644 }
+    it { should be_owned_by user }
+    it { should be_grouped_into group }
+    its(:content) { should match(/BEGIN CERTIFICATE/) }
+  end
 
-describe file agent_key do
-  it { should exist }
-  it { should be_file }
-  it { should be_mode 600 }
-  it { should be_owned_by user }
-  it { should be_grouped_into group }
-  its(:content) { should match(/BEGIN RSA PRIVATE KEY/) }
+  describe file agent_key do
+    it { should exist }
+    it { should be_file }
+    it { should be_mode 600 }
+    it { should be_owned_by user }
+    it { should be_grouped_into group }
+    its(:content) { should match(/BEGIN RSA PRIVATE KEY/) }
+  end
+
+  describe file config do
+    its(:content) { should match(/TLSAccept=cert/) }
+    its(:content) { should match(/TLSConnect=cert/) }
+  end
+when "psk"
+  describe file config do
+    its(:content) { should match(/TLSAccept=psk/) }
+    its(:content) { should match(/TLSConnect=psk/) }
+    its(:content) { should match(/TLSPSKIdentity=default/) }
+  end
 end

@@ -1,0 +1,44 @@
+---
+- hosts: localhost
+  roles:
+    - ansible-role-zabbix_agent
+  vars:
+    zabbix_agent_debug: yes
+    zabbix_agent_config: |
+      Server={{ zabbix_agent_server }}
+      ListenPort={{ zabbix_agent_listen_port }}
+      ListenIP={{ zabbix_agent_listen_ip }}
+      ServerActive={{ zabbix_agent_server }}
+      Hostname=Zabbix server
+      LogFileSize=0
+      LogFile={{ zabbix_agent_log_file }}
+
+      {% if ansible_os_family == 'Debian' %}
+      PidFile={{ zabbix_agent_pid_file }}
+      {% endif %}
+
+      TLSAccept=psk
+      TLSConnect=psk
+      TLSPSKFile={{ zabbix_agent_psk_dir }}/{{ zabbix_agent_psk['name'] }}
+      TLSPSKIdentity={{ zabbix_agent_psk['identity'] }}
+
+      Include={{ zabbix_agent_conf_d_dir }}/*.conf
+    zabbix_agent_config_flagments:
+      - name: foo.conf
+        content: |
+          # foo.conf
+        state: present
+      - name: bar.conf
+        state: absent
+    project_agent_ca_pub_file: "{{ zabbix_agent_x509_cert_dir }}/ca.pub"
+    project_agent_pub_file: "{{ zabbix_agent_x509_cert_dir }}/agent.pub"
+    project_agent_key_file: "{{ zabbix_agent_x509_cert_dir }}/agent.key"
+
+    # _______________________________________________PSK
+    zabbix_agent_psk_dir: "{{ zabbix_agent_conf_dir }}/psk"
+    zabbix_agent_psk:
+      name: default.psk
+      identity: default
+      value: 202bedb620721ba6126b1d0c1239044237397dc544a5c28095a5bb75925f471c
+    # _______________________________________________x509
+    zabbix_agent_x509_certificates: []

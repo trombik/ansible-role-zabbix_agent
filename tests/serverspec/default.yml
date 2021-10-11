@@ -35,6 +35,12 @@
     project_agent_pub_file: "{{ zabbix_agent_x509_cert_dir }}/agent.pub"
     project_agent_key_file: "{{ zabbix_agent_x509_cert_dir }}/agent.key"
 
+    # _______________________________________________PSK
+    zabbix_agent_psk_dir: "{{ zabbix_agent_conf_dir }}/psk"
+    zabbix_agent_psk:
+      name: default.psk
+      identity: default
+      value: 202bedb620721ba6126b1d0c1239044237397dc544a5c28095a5bb75925f471c
     # _______________________________________________x509
     x509_certificate_debug_log: yes
     zabbix_agent_x509_certificates:

@@ -68,3 +68,12 @@ suites:
     verifier:
       name: shell
       command: rspec -c -f d -I tests/serverspec tests/serverspec/default_spec.rb
+  - name: psk
+    provisioner:
+      name: ansible_playbook
+      playbook: tests/serverspec/psk.yml
+    verifier:
+      name: shell
+      command: rspec -c -f d -I tests/serverspec tests/serverspec/psk_spec.rb
+    includes:
+      - freebsd-13.0-amd64
