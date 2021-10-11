@@ -122,15 +122,6 @@ describe file(psk_dir) do
   it { should be_grouped_into group }
 end
 
-describe file(psk_file) do
-  it { should exist }
-  it { should be_file }
-  it { should be_mode 600 }
-  it { should be_owned_by user }
-  it { should be_grouped_into group }
-  its(:content) { should match Regexp.escape("202bedb620721ba6126b1d0c1239044237397dc544a5c28095a5bb75925f471c") }
-end
-
 case os[:family]
 when "freebsd"
   describe file("/etc/rc.conf.d/#{service}") do
@@ -189,5 +180,14 @@ when "psk"
     its(:content) { should match(/TLSAccept=psk/) }
     its(:content) { should match(/TLSConnect=psk/) }
     its(:content) { should match(/TLSPSKIdentity=default/) }
+  end
+
+  describe file(psk_file) do
+    it { should exist }
+    it { should be_file }
+    it { should be_mode 600 }
+    it { should be_owned_by user }
+    it { should be_grouped_into group }
+    its(:content) { should match Regexp.escape("202bedb620721ba6126b1d0c1239044237397dc544a5c28095a5bb75925f471c") }
   end
 end

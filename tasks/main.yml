@@ -105,6 +105,8 @@
     owner: "{{ zabbix_agent_user }}"
     group: "{{ zabbix_agent_group }}"
   notify: Restart zabbix_agent
+  when:
+    - "'name' in zabbix_agent_psk"
 
 - name: Start zabbix_agent
   ansible.builtin.service:
